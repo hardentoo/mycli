@@ -44,7 +44,9 @@ def before_all(context):
         'dbname': db_name,
         'dbname_tmp': db_name_full + '_tmp',
         'vi': vi,
+        'pager_boundary': '---boundary---',
     }
+    os.environ['PAGER'] = "{0} {1} {2}".format(sys.executable, "tests/features/wrappager.py", context.conf['pager_boundary'])
 
     context.cn = dbutils.create_db(context.conf['host'], context.conf['user'],
                                    context.conf['pass'],

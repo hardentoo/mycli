@@ -42,7 +42,7 @@ def step_wait_prompt(context):
     user = context.conf['user']
     host = context.conf['host']
     dbname = context.conf['dbname']
-    wrappers.expect_exact(context, 'mysql {0}@{1}:{2}> '.format(user, host, dbname), timeout=5)
+    wrappers.expect_exact(context, 'mysql {0}@{1}:{2}> '.format(user, host, dbname), timeout=5, ignore_before=True)
 
 
 @when('we send "ctrl + d"')
@@ -60,3 +60,4 @@ def step_send_help(context):
     Send \? to see help.
     """
     context.cli.sendline('\\?')
+    wrappers.expect_exact(context, context.conf['pager_boundary']+'\r\n', timeout=5, ignore_before=True)

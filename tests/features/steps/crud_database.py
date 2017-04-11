@@ -33,7 +33,7 @@ def step_db_drop(context):
     context.cli.sendline('drop database {0};'.format(
         context.conf['dbname_tmp']))
 
-    wrappers.expect_exact(context, 'You\'re about to run a destructive command.\r\nDo you want to proceed? (y/n):', timeout=2)
+    wrappers.expect_exact(context, 'You\'re about to run a destructive command.\r\nDo you want to proceed? (y/n):', timeout=2, ignore_before=True)
     context.cli.sendline('y')
 
 @when('we connect to test database')
@@ -58,7 +58,7 @@ def step_wait_exit(context):
     """
     Make sure the cli exits.
     """
-    wrappers.expect_exact(context, pexpect.EOF, timeout=5)
+    wrappers.expect_exact(context, pexpect.EOF, timeout=5, ignore_before=True)
 
 
 @then('we see dbcli prompt')
@@ -69,7 +69,7 @@ def step_see_prompt(context):
     user = context.conf['user']
     host = context.conf['host']
     dbname = context.conf['dbname']
-    wrappers.expect_exact(context, 'mysql {0}@{1}:{2}> '.format(user, host, dbname), timeout=5)
+    wrappers.expect_exact(context, 'mysql {0}@{1}:{2}> '.format(user, host, dbname), timeout=5, ignore_before=True)
 
 
 @then('we see help output')
@@ -83,7 +83,9 @@ def step_see_db_created(context):
     """
     Wait to see create database output.
     """
+    wrappers.expect_exact(context, context.conf['pager_boundary']+'\r\n', timeout=5, ignore_before=True)
     wrappers.expect_exact(context, 'Query OK, 1 row affected\r\n', timeout=2)
+    wrappers.expect_exact(context, context.conf['pager_boundary']+'\r\n', timeout=5)
 
 
 @then('we see database dropped')
@@ -91,7 +93,9 @@ def step_see_db_dropped(context):
     """
     Wait to see drop database output.
     """
+    wrappers.expect_exact(context, context.conf['pager_boundary']+'\r\n', timeout=5, ignore_before=True)
     wrappers.expect_exact(context, 'Query OK, 0 rows affected\r\n', timeout=2)
+    wrappers.expect_exact(context, context.conf['pager_boundary']+'\r\n', timeout=5)
 
 
 @then('we see database connected')
@@ -99,6 +103,8 @@ def step_see_db_connected(context):
     """
     Wait to see drop database output.
     """
+    wrappers.expect_exact(context, context.conf['pager_boundary']+'\r\n', timeout=5, ignore_before=True)
     wrappers.expect_exact(context, 'You are now connected to database "', timeout=2)
-    wrappers.expect_exact(context, '"', timeout=2)
+    wrappers.expect_exact(context, '"', timeout=2, ignore_before=True)
     wrappers.expect_exact(context, ' as user "{0}"\r\n'.format(context.conf['user']), timeout=2)
+    wrappers.expect_exact(context, context.conf['pager_boundary']+'\r\n', timeout=5)
